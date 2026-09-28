@@ -11,6 +11,7 @@ const STYLES = {
   mingeo: "minimalist geometric: flat bold shapes, strong color blocks, refined simplicity",
   ghibli: "Studio Ghibli-inspired: whimsical, soft, storybook warmth, hand-crafted charm",
   ukiyoe: "ukiyo-e woodblock: flat planes of color, ink outlines, classic Japanese print grace",
+  logo: "iconic minimal logo mark: one strong symbol, no text or letters, perfect balance with generous negative space, confident silhouette, timeless professional identity. For this style a centered, symmetric composition is correct — ignore the rule-of-thirds requirement",
 };
 
 const DEFAULT_STYLE = "ghibli";
