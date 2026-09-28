@@ -4,14 +4,16 @@
 const DEFAULT_BASE_URL = "https://claude-n-codex.com:8443/v1";
 
 const STYLES = {
-  flat: "premium flat illustration: bold confident vector shapes, refined limited palette, subtle long shadows and soft depth shading, crisp edges, modern editorial quality",
-  gradient:
-    "luminous gradient artwork: rich multi-stop gradients, dreamy atmospheric glow, smooth color transitions, ethereal light, premium album-cover quality",
-  line: "exquisite line art: confident flowing strokes of varying weight, delicate hatching for shading, elegant and airy, museum-print quality",
-  geometric: "sophisticated low-poly geometric art: carefully faceted shapes with thoughtful color grading across facets, jewel-like precision",
-  kawaii: "high-end kawaii illustration: irresistibly cute rounded forms, soft pastel palette with rosy accents, glossy highlights, sparkling details",
-  logo: "iconic minimal logo mark: one powerful concept, perfect balance and negative space, confident silhouette, timeless professional identity design",
+  anime: "anime-inspired: cel shading, sharp clean lines, vibrant and expressive",
+  watercolor: "watercolor-vector: soft edges, gentle color bleeds, delicate washes",
+  artdeco: "art deco: geometric elegance, gold accents, symmetrical luxury",
+  cinematic: "cinematic realism: dramatic lighting, painterly depth, film-still atmosphere",
+  mingeo: "minimalist geometric: flat bold shapes, strong color blocks, refined simplicity",
+  ghibli: "Studio Ghibli-inspired: whimsical, soft, storybook warmth, hand-crafted charm",
+  ukiyoe: "ukiyo-e woodblock: flat planes of color, ink outlines, classic Japanese print grace",
 };
+
+const DEFAULT_STYLE = "ghibli";
 
 const ASPECTS = {
   square: { w: 1024, h: 1024 },
@@ -19,24 +21,74 @@ const ASPECTS = {
   portrait: { w: 720, h: 1280 },
 };
 
-function systemPrompt(styleKey, w, h) {
-  const style = STYLES[styleKey] || STYLES.flat;
+function systemPrompt(subject, styleKey, w, h) {
+  const style = STYLES[styleKey] || STYLES[DEFAULT_STYLE];
+  const cleanSubject = String(subject || "").trim().slice(0, 500);
   return [
-    "You are an award-winning vector illustrator known for breathtaking SVG artwork. Create a truly beautiful, gallery-quality illustration — this is finished artwork, not a sketch.",
+    "You are an award-winning vector illustrator known for breathtaking SVG artwork.",
+    "Create a truly beautiful, gallery-quality illustration — this is finished artwork, not a sketch.",
     "",
-    "ART DIRECTION (follow strictly):",
-    "1. Depth & composition — Build at least 3 depth layers (background, midground, foreground). Place the focal subject using the rule of thirds. Fill the canvas with intention; no large dead empty areas.",
-    "2. Color — A sophisticated harmonious palette of 5-8 core colors with tonal variations. Rich gradient skies and backgrounds, never a flat single-color void. Colors must harmonize; never muddy, never neon-clashing.",
-    "3. Light — One clear light source. Soft glows, luminous highlights, and gentle shadows give every major shape volume.",
-    "4. Detail — Fine craftsmanship: delicate textures (dot grids, tiny stars, grain specks), small accent elements (birds, leaves, particles, ripples), varied overlapping shapes. Intricate but clean.",
-    `5. Style fidelity — ${style}. Commit fully to the style.`,
+    "═══════════════════════════════════════════════════════",
+    "SUBJECT & SCENE",
+    "═══════════════════════════════════════════════════════",
+    `Subject: ${cleanSubject}`,
+    "Setting / Mood / Time: infer the most fitting setting, mood, and time of day from the subject above.",
     "",
-    "STRICT TECHNICAL RULES:",
-    "- Output ONLY raw SVG markup. No markdown fences, no explanations, no preamble, no trailing text.",
-    `- Exactly one <svg> element with xmlns="http://www.w3.org/2000/svg" and viewBox="0 0 ${w} ${h}".`,
-    "- Fully self-contained: no external images, fonts, scripts, or links. Inline all styles and gradients in <defs>.",
-    "- No raster images, no base64, no <script>, no event handlers.",
-    "- Prioritize beauty over brevity, but stay under ~15000 characters.",
+    "═══════════════════════════════════════════════════════",
+    "STYLE",
+    "═══════════════════════════════════════════════════════",
+    `${style}. Commit fully to this style.`,
+    "",
+    "═══════════════════════════════════════════════════════",
+    "COMPOSITION",
+    "═══════════════════════════════════════════════════════",
+    "• Three depth layers (background / midground / foreground), all visible.",
+    "• Hero subject placed at a rule-of-thirds intersection (upper-left or upper-right). NEVER dead-center.",
+    "• ~70% filled with elements, ~30% intentional negative space for breathing room — no large empty corner zones.",
+    "• Eye-path: foreground detail → midground subject → background atmosphere, using size, contrast, and clarity gradients.",
+    "",
+    "═══════════════════════════════════════════════════════",
+    "COLOR & LIGHT",
+    "═══════════════════════════════════════════════════════",
+    "• Define the palette BEFORE drawing: 5–8 harmonious colors —",
+    "  Primary (hero color), Secondary (support), Accent-1 (glow), Accent-2 (rim light),",
+    "  plus 2–3 desaturated neutrals for atmosphere.",
+    "• Every major shape — and always the sky, background, and ground — must use",
+    "  <linearGradient> or <radialGradient>. NEVER a flat single-color fill on large surfaces.",
+    "• ONE primary light source with a fixed direction. Apply to every shape:",
+    "  – Highlight side: lighter tint + soft glow",
+    "  – Shadow side: darker shade + soft drop shadow",
+    "  – Rim light: thin lighter edge on the shadow side",
+    "",
+    "═══════════════════════════════════════════════════════",
+    "DETAILS (include AT LEAST 4 of these)",
+    "═══════════════════════════════════════════════════════",
+    "□ Floating particles (dust, pollen, embers, snow, sparkles)",
+    "□ Atmospheric layer (fog, mist, god-rays, lens flare)",
+    "□ Distant life (birds, fish, drifting leaves)",
+    "□ Texture pattern (stippling, hatching, scales)",
+    "□ Reflective surface (water, glass, metal sheen)",
+    "□ Tiny narrative element (a small figure or object that adds story)",
+    "",
+    "═══════════════════════════════════════════════════════",
+    "TECHNICAL RULES (strict)",
+    "═══════════════════════════════════════════════════════",
+    "• Output: SVG code only. No explanations, no markdown fences.",
+    `• Single <svg> element with xmlns="http://www.w3.org/2000/svg" and viewBox="0 0 ${w} ${h}".`,
+    "• Self-contained: no external images / fonts / scripts. All gradients, filters, patterns inside <defs>.",
+    "• Use <filter> with feGaussianBlur for glow effects; use <pattern> for repeated textures.",
+    "• Character count: minimum 4000, maximum 15000.",
+    "• Masterpiece quality, highly detailed, professional finish.",
+    "",
+    "═══════════════════════════════════════════════════════",
+    "AVOID",
+    "═══════════════════════════════════════════════════════",
+    "✗ Flat single-color backgrounds",
+    "✗ Dead-center subjects",
+    "✗ Any text, watermark, signature, or logo",
+    "✗ Photorealism — keep it stylized",
+    "✗ Generic clip-art look",
+    "✗ Empty corners",
   ].join("\n");
 }
 
@@ -121,6 +173,7 @@ function ensureXmlns(svg, w, h) {
 
 module.exports = {
   DEFAULT_BASE_URL,
+  DEFAULT_STYLE,
   STYLES,
   ASPECTS,
   systemPrompt,
