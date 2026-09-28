@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG Art Studio — AI ပန်းချီစက်</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bg-orbs"><span></span><span></span><span></span></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">✦</div>
+    <div>
+      <h1 data-i18n="brand">SVG Art Studio</h1>
+      <p data-i18n="tagline">AI ပန်းချီစက်</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <div class="lang-toggle">
+      <button id="langMy" class="active">မြန်မာ</button>
+      <button id="langEn">EN</button>
+    </div>
+    <button id="openSettings" class="icon-btn" title="Settings">⚙</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="panel controls">
+    <label class="field-label" data-i18n="promptLabel">ပန်းချီဖော်ပြချက်</label>
+    <textarea id="prompt" rows="4" data-i18n-ph="promptPh" placeholder="ဥပမာ — နေဝင်ချိန်မှာ ဘုရားစေတီတွေနဲ့ မီးပုံးပျံများ"></textarea>
+
+    <label class="field-label" data-i18n="styleLabel">စတိုင်</label>
+    <div class="pills" id="stylePills"></div>
+
+    <div class="row2">
+      <div>
+        <label class="field-label" data-i18n="aspectLabel">အချိုး</label>
+        <div class="segmented" id="aspectSeg"></div>
+      </div>
+      <div>
+        <label class="field-label" data-i18n="modelLabel">Model</label>
+        <select id="modelSelect"></select>
+      </div>
+    </div>
+
+    <button id="generateBtn" class="btn-primary">
+      <span class="btn-icon">✦</span><span data-i18n="generate">ပန်းချီထုတ်မယ်</span>
+    </button>
+    <p id="genStatus" class="status"></p>
+  </section>
+
+  <section class="panel preview-panel">
+    <div class="preview-head">
+      <h2 data-i18n="preview">အစမ်းကြည့်ရန်</h2>
+      <div class="preview-actions" id="previewActions" hidden>
+        <button class="btn-ghost" id="dlSvg">⬇ SVG</button>
+        <button class="btn-ghost" id="dlPng">⬇ PNG</button>
+        <button class="btn-ghost" id="copyCode" data-i18n="copyCode">ကုဒ်ကူးမယ်</button>
+        <button class="btn-ghost" id="saveArt" data-i18n="saveArt">သိမ်းမယ်</button>
+      </div>
+    </div>
+    <div id="previewBox" class="preview-box empty">
+      <div class="empty-hint">
+        <div class="empty-art">🎨</div>
+        <p data-i18n="emptyHint">ဘယ်ဘက်မှာ ဖော်ပြချက်ရေးပြီး<br>ပန်းချီထုတ်ကြည့်လိုက်ပါ</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section class="gallery-section">
+  <div class="gallery-head">
+    <h2 data-i18n="gallery">သိမ်းထားသော ပန်းချီများ</h2>
+    <span id="galleryCount" class="count"></span>
+  </div>
+  <div id="galleryGrid" class="gallery-grid"></div>
+  <p id="galleryEmpty" class="muted" data-i18n="galleryEmpty">မရှိသေးပါ — ကြိုက်တဲ့ပန်းချီကို “သိမ်းမယ်” နှိပ်ပါ</p>
+</section>
+
+<div id="settingsModal" class="modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 data-i18n="settings">ဆက်တင်များ</h2>
+      <button id="closeSettings" class="icon-btn">✕</button>
+    </div>
+    <label class="field-label" data-i18n="baseUrlLabel">Gateway URL</label>
+    <input id="setBaseUrl" type="text" spellcheck="false">
+    <label class="field-label" data-i18n="apiKeyLabel">API Key</label>
+    <input id="setApiKey" type="password" autocomplete="off" data-i18n-ph="apiKeyPh" placeholder="••••••••">
+    <p class="hint" data-i18n="apiKeyHint">Key ကို server မှာပဲ လျှို့ဝှက်သိမ်းထားမယ်၊ browser ကို ဘယ်တော့မှ မပို့ဘူး။</p>
+    <label class="field-label" data-i18n="modelLabel2">Model</label>
+    <div class="row-gap">
+      <select id="setModel" class="grow"></select>
+      <button id="loadModels" class="btn-ghost" data-i18n="loadModels">Models ခေါ်မယ်</button>
+    </div>
+    <p id="setStatus" class="status"></p>
+    <div class="modal-foot">
+      <button id="testConn" class="btn-ghost" data-i18n="testConn">စမ်းသပ်မယ်</button>
+      <button id="saveSettings" class="btn-primary" data-i18n="save">သိမ်းမယ်</button>
+    </div>
+  </div>
+</div>
+
+<div id="lightbox" class="modal" hidden>
+  <div class="modal-card wide">
+    <div class="modal-head">
+      <h2 id="lbTitle"></h2>
+      <button id="closeLb" class="icon-btn">✕</button>
+    </div>
+    <div id="lbBody" class="lb-body"></div>
+    <div class="modal-foot">
+      <button id="lbDlSvg" class="btn-ghost">⬇ SVG</button>
+      <button id="lbDlPng" class="btn-ghost">⬇ PNG</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
