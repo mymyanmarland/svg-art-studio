@@ -79,7 +79,7 @@ app.post("/api/generate", async (req, res) => {
       c.apiKey,
       useModel,
       gw.systemPrompt(styleKey, dims.w, dims.h),
-      String(prompt).trim()
+      String(prompt).trim() + " Masterpiece quality, highly detailed, professional finish."
     );
     let svg = gw.extractSvg(raw);
     if (!svg) return res.status(502).json({ error: "no-svg", detail: raw.slice(0, 300) });
