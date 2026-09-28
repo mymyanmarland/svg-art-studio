@@ -4,13 +4,13 @@
 const DEFAULT_BASE_URL = "https://claude-n-codex.com:8443/v1";
 
 const STYLES = {
-  flat: "flat vector illustration, bold clean shapes, limited harmonious palette, subtle shadows",
+  flat: "premium flat illustration: bold confident vector shapes, refined limited palette, subtle long shadows and soft depth shading, crisp edges, modern editorial quality",
   gradient:
-    "modern gradient artwork, smooth vivid color transitions, soft glows, dreamy atmosphere",
-  line: "elegant line art, refined thin strokes, generous whitespace, minimal and graceful",
-  geometric: "geometric low-poly artwork, faceted polygonal shapes, crisp edges",
-  kawaii: "cute kawaii style, soft rounded shapes, pastel colors, cheerful and playful",
-  logo: "minimal logo mark, one strong concept, clean silhouette, balanced composition, works at small sizes",
+    "luminous gradient artwork: rich multi-stop gradients, dreamy atmospheric glow, smooth color transitions, ethereal light, premium album-cover quality",
+  line: "exquisite line art: confident flowing strokes of varying weight, delicate hatching for shading, elegant and airy, museum-print quality",
+  geometric: "sophisticated low-poly geometric art: carefully faceted shapes with thoughtful color grading across facets, jewel-like precision",
+  kawaii: "high-end kawaii illustration: irresistibly cute rounded forms, soft pastel palette with rosy accents, glossy highlights, sparkling details",
+  logo: "iconic minimal logo mark: one powerful concept, perfect balance and negative space, confident silhouette, timeless professional identity design",
 };
 
 const ASPECTS = {
@@ -22,14 +22,21 @@ const ASPECTS = {
 function systemPrompt(styleKey, w, h) {
   const style = STYLES[styleKey] || STYLES.flat;
   return [
-    "You are an expert vector illustrator. Create an original, high-quality SVG illustration for the user's description.",
-    "STRICT OUTPUT RULES:",
-    "- Output ONLY raw SVG markup. No markdown fences, no explanations, no preamble, no other text.",
+    "You are an award-winning vector illustrator known for breathtaking SVG artwork. Create a truly beautiful, gallery-quality illustration — this is finished artwork, not a sketch.",
+    "",
+    "ART DIRECTION (follow strictly):",
+    "1. Depth & composition — Build at least 3 depth layers (background, midground, foreground). Place the focal subject using the rule of thirds. Fill the canvas with intention; no large dead empty areas.",
+    "2. Color — A sophisticated harmonious palette of 5-8 core colors with tonal variations. Rich gradient skies and backgrounds, never a flat single-color void. Colors must harmonize; never muddy, never neon-clashing.",
+    "3. Light — One clear light source. Soft glows, luminous highlights, and gentle shadows give every major shape volume.",
+    "4. Detail — Fine craftsmanship: delicate textures (dot grids, tiny stars, grain specks), small accent elements (birds, leaves, particles, ripples), varied overlapping shapes. Intricate but clean.",
+    `5. Style fidelity — ${style}. Commit fully to the style.`,
+    "",
+    "STRICT TECHNICAL RULES:",
+    "- Output ONLY raw SVG markup. No markdown fences, no explanations, no preamble, no trailing text.",
     `- Exactly one <svg> element with xmlns="http://www.w3.org/2000/svg" and viewBox="0 0 ${w} ${h}".`,
-    "- Fully self-contained: no external images, fonts, scripts, or links. Inline all styles.",
-    "- No raster images, no base64 blobs.",
-    `- Artistic style: ${style}.`,
-    "- Compose a complete, polished, professional scene — not a sketch, not placeholder shapes.",
+    "- Fully self-contained: no external images, fonts, scripts, or links. Inline all styles and gradients in <defs>.",
+    "- No raster images, no base64, no <script>, no event handlers.",
+    "- Prioritize beauty over brevity, but stay under ~15000 characters.",
   ].join("\n");
 }
 
@@ -50,8 +57,8 @@ async function chatCompletion(baseUrl, apiKey, model, system, user, timeoutMs = 
           { role: "system", content: system },
           { role: "user", content: user },
         ],
-        temperature: 0.8,
-        max_tokens: 6000,
+        temperature: 0.85,
+        max_tokens: 8000,
       }),
       signal: ctrl.signal,
     });
