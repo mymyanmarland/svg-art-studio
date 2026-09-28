@@ -70,7 +70,7 @@ app.post("/api/generate", async (req, res) => {
     const c = creds();
     if (!c.apiKey) return res.status(400).json({ error: "no-key" });
 
-    const styleKey = gw.STYLES[style] ? style : "flat";
+    const styleKey = gw.STYLES[style] ? style : gw.DEFAULT_STYLE;
     const dims = gw.ASPECTS[aspect] || gw.ASPECTS.square;
     const useModel = model || c.model;
 
@@ -78,8 +78,8 @@ app.post("/api/generate", async (req, res) => {
       c.baseUrl,
       c.apiKey,
       useModel,
-      gw.systemPrompt(styleKey, dims.w, dims.h),
-      String(prompt).trim() + " Masterpiece quality, highly detailed, professional finish."
+      gw.systemPrompt(String(prompt).trim(), styleKey, dims.w, dims.h),
+      String(prompt).trim()
     );
     let svg = gw.extractSvg(raw);
     if (!svg) return res.status(502).json({ error: "no-svg", detail: raw.slice(0, 300) });
