@@ -14,7 +14,7 @@ const I18N = {
     apiKeyPh: "key အသစ်ထည့်ရန် ဒီမှာရိုက်ပါ",
     apiKeyHint: "Key ကို server မှာပဲ လျှို့ဝှက်သိမ်းထားမယ်၊ browser ကို ဘယ်တော့မှ မပို့ဘူး။",
     modelLabel2: "Model", loadModels: "Models ခေါ်မယ်", testConn: "စမ်းသပ်မယ်", save: "သိမ်းမယ်",
-    styles: { flat: "ပြားချပ်ပုံစံ", gradient: "အရောင်စပ်", line: "မျဉ်းကြောင်း", geometric: "ဂျီဩမေတြီ", kawaii: "ချစ်စရာ", logo: "လိုဂို" },
+    styles: { anime: "အန်နီမေး", watercolor: "ရေဆေး", artdeco: "အာ့တ် ဒီကို", cinematic: "ရုပ်ရှင်ဆန်", mingeo: "ဂျီဩမေတြီ", ghibli: "ဂီဘလီ", ukiyoe: "အုခိယို-အဲ" },
     aspects: { square: "စတုရန်း", landscape: "အလျား", portrait: "အနံ" },
     generating: "ပန်းချီရေးဆွဲနေသည်… ခဏစောင့်ပါ",
     needKey: "⚠ အရင် ⚙ ဆက်တင်မှာ API Key ထည့်ပေးပါ",
@@ -37,7 +37,7 @@ const I18N = {
     apiKeyPh: "type a new key here to replace",
     apiKeyHint: "The key is stored encrypted on the server only — it never reaches the browser.",
     modelLabel2: "Model", loadModels: "Load models", testConn: "Test", save: "Save",
-    styles: { flat: "Flat", gradient: "Gradient", line: "Line art", geometric: "Geometric", kawaii: "Kawaii", logo: "Logo" },
+    styles: { anime: "Anime", watercolor: "Watercolor", artdeco: "Art Deco", cinematic: "Cinematic", mingeo: "Minimal Geo", ghibli: "Ghibli", ukiyoe: "Ukiyo-e" },
     aspects: { square: "Square", landscape: "Landscape", portrait: "Portrait" },
     generating: "Painting… please wait",
     needKey: "⚠ Please add your API key in ⚙ Settings first",
@@ -52,7 +52,7 @@ const I18N = {
 
 const state = {
   lang: localStorage.getItem("svgart-lang") || "my",
-  style: "flat", aspect: "square", model: "",
+  style: "ghibli", aspect: "square", model: "",
   current: null, // {svg, prompt, style, model}
 };
 
@@ -85,7 +85,7 @@ function applyLang() {
 
 function renderStylePills() {
   const box = $("stylePills"); box.innerHTML = "";
-  for (const key of ["flat", "gradient", "line", "geometric", "kawaii", "logo"]) {
+  for (const key of ["anime", "watercolor", "artdeco", "cinematic", "mingeo", "ghibli", "ukiyoe"]) {
     const b = document.createElement("button");
     b.className = "pill" + (state.style === key ? " active" : "");
     b.textContent = I18N[state.lang].styles[key];
