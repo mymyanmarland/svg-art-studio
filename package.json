@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.19.2"},"description":"AI SVG art generator powered by a custom OpenAI-compatible gateway","engines":{"node":">=22"},"main":"src/server.js","name":"svg-art-generator","scripts":{"start":"node src/server.js"},"type":"commonjs","version":"1.0.0"}
